@@ -7,3 +7,4 @@ https://www.nist.gov/programs-projects/genome-bottle
 https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/latest/
 https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/CMRG_v1.00/
 
+The HG002 data obtained from Oxford Nanopore Technologies was analysed for SNVs using Clair3 (clair3-run.sh).
