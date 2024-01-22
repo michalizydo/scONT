@@ -12,4 +12,4 @@ The HG002 data obtained from Oxford Nanopore Technologies. The analysis pipeline
   1. SNVs are called using Clair3 (clair3-run.sh).
   2. SNV calls are split into substitutions and small IN/DELs (filterIndelSub.py).
   3. Calls are filtered for those located in regions covered by 5 or more reads (..).
-  4. Calls supported by at least 2 reads are selected (SNVsup.py). 
+  4. Calls supported by at least 3 reads are selected (SNVsup.py). 
