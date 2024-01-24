@@ -44,14 +44,17 @@ Single-cell and corresponding bulk data pipeline:
      samtools sort -@ 24 <sample.bam> > <sample.sorted.bam>
      samtools index -@ 24 <sample.sorted.bam>
   2. Single-cell samples were grouped by library preparation technique and tissue type. Groups of cell data were merged using Samtools:
-     samtools merge -o <merge_out.bam> <cell_data1.bam> <cell_data2.bam>... 
+     samtools merge -r -o <merge_out.bam> <cell_data1.bam> <cell_data2.bam>... 
   4. The single cell assemblies and merges were analysed with mosdepth to determine regions of >=5 coverage:  
      mosdepth --quantize 0:4:5:  <sample.bam>.quantized5.bed <sample.bam>    
-  5. SNVs are called using Clair3 (clair3-run.sh).  
-  6. SNV calls are split into substitutions and small IN/DELs (filterIndelSub.py).  
-  7. Calls are filtered for those located in regions covered by 5 or more reads within single cells, both on single cell and corresponding bulk:  
+  5. SNVs are called using Clair3 (clair3-run.sh).
+  6. Resulting vcf were corrected to use uppercase letters in sequence and report correct sample names (fixglnexus.py).
+  7. SNV calls from groups of single cells and corresponding bulks were merged using Glnexus with jemalloc:
+       LD_PRELOAD=libjemalloc.so glnexus_cli_1.4.1 -c clair3.yml --mem-gbytes 32 --threads 12 <input.gvcf.gz> > <output.bcf>  
+  8. SNV calls are split into substitutions and small IN/DELs (filterIndelSub.py).  
+  9. Calls are filtered for those located in regions covered by 5 or more reads within single cells, both on single cell and corresponding bulk:  
      bedtools intersect -a <SNVcalls.vcf.gz> -b <sample.bam>.quantized5.bed  
-  8. Calls supported by at least 3 reads are selected (SNVsup.py).   
-  9. Filtering from points 3-5 was applied to GIAB HG002 benchmark .vcf files, using
+  10. Calls supported by at least 3 reads are selected (SNVsup.py).   
+  11. Filtering from points 3-5 was applied to GIAB HG002 benchmark .vcf files, using
      <sample.bam>.quantized5.bed regions corresponding to each specific test
      so that the regions within the tested sample and baseline were the same.
