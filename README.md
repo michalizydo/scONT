@@ -30,9 +30,11 @@ The HG002 data obtained from Oxford Nanopore Technologies. The analysis pipeline
        rtg vcfeval --baseline  <Baseline.SNVcalls.filtered.vcf.gz> --bed-regions <Baseline.SNVcalls.bed> -c <Sample.SNVcalls.filtered.vcf.gz> -o <output> -t <hg38.sdf/hg19.sdf>
   11. SVs are called with Sniffles2:
        sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa/hg19.fa> --vcf <output_vcf> --snf <output_snf>
-  12. Calls are filtered for those located in regions covered by 5 or more reads:  
+  12. SV calls are filtered for those located in regions covered by 5 or more reads:  
        bedtools intersect -a <SVcalls.vcf.gz> -b <sample.bam>.quantized5.bed
-  13. Calls are filtered for those supported by at least 3 reads and containing insertions or deletions (filterIndelSV.py), additionally split between insertions or deletions by using:
+  13. SV calls are filtered for those supported by at least 3 reads and containing insertions or deletions (filterIndelSV.py), additionally split between insertions or deletions by using:
       grep SVTYPE=<INS/DEL> <SVcalls.vcf.gz>
+  14. SV calls within the tested samples are benchmarked against the Giab truthset using Truvari:
+      
 
 Single-cell and corresponding bulk data 
