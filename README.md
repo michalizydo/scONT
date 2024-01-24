@@ -55,6 +55,3 @@ Single-cell and corresponding bulk data pipeline:
   9. Calls are filtered for those located in regions covered by 5 or more reads within single cells, both on single cell and corresponding bulk:  
      bedtools intersect -a <SNVcalls.vcf.gz> -b <sample.bam>.quantized5.bed  
   10. Calls supported by at least 3 reads are selected (SNVsup.py).   
-  11. Filtering from points 3-5 was applied to GIAB HG002 benchmark .vcf files, using
-     <sample.bam>.quantized5.bed regions corresponding to each specific test
-     so that the regions within the tested sample and baseline were the same.
