@@ -54,4 +54,11 @@ Single-cell and corresponding bulk data pipeline:
   8. SNV calls are split into substitutions and small IN/DELs (filterIndelSub.py).  
   9. Calls are filtered for those located in regions covered by 5 or more reads within single cells, both on single cell and corresponding bulk:  
      bedtools intersect -a <SNVcalls.vcf.gz> -b <sample.bam>.quantized5.bed  
-  10. Calls supported by at least 3 reads are selected and a summary of Bulk only (TN)), Single-cell only (FP) and shared calls is generated (TP) (filterSNV.py). Resulting summary used to calculate F1 scores, fractions and absolute variant counts.   
+  10. Calls supported by at least 3 reads are selected and a summary of Bulk only (TN)), Single-cell only (FP) and shared calls is generated (TP) (filterSNV.py).
+      Resulting summary used to calculate F1 scores, fractions and absolute variant counts.   
+  12. SVs are called with Sniffles2:  
+      sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa> --vcf <output_vcf> --snf <output_snf>
+  13. SV calls are filtered for those located in regions covered by 5 or more reads:  
+      bedtools intersect -a <SVcalls.vcf.gz> -b <sample.bam>.quantized5.bed
+  14. SV calls are filtered for those with PASS filter, supported by at least 3 reads in any of the merged single cells and containing insertions or deletions (filterSVmerge.py).
+  15. Filtered SV insertions are converted to .fasta, while deletions are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). 
