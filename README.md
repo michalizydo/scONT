@@ -21,12 +21,12 @@ The HG002 data obtained from Oxford Nanopore Technologies. The analysis pipeline
   5. Calls are filtered for those located in regions covered by 5 or more reads:  
      bedtools intersect -a <SNVcalls.vcf.gz> -b <sample.bam>.quantized5.bed  
   6. Calls supported by at least 3 reads are selected (SNVsup.py).   
-  7. Filtering from points 3-5 was applied to GIAB HG002 benchmark .vcf files, using
-     <sample.bam>.quantized5.bed regions corresponding to each specific test
-     so that the regions within the tested sample and baseline were the same.
-  8. Filtered .vcf files were tabix indexed with bcftools:
+  7. Filtering from points 3-5 was applied to GIAB HG002 benchmark .vcf files, using  
+     <sample.bam>.quantized5.bed regions corresponding to each specific test  
+     so that the regions within the tested sample and baseline were the same.  
+  8. Filtered .vcf files were tabix indexed with bcftools:  
      bcftools index -t <SNVcalls.filtered.vcf.gz>
-  9. Calls are compared using RTGtools:
+  9. Calls are compared using RTGtools:  
       rtg vcfeval --baseline  <Baseline.SNVcalls.filtered.vcf.gz> --bed-regions <Baseline.SNVcalls.bed> -c <Sample.SNVcalls.filtered.vcf.gz> -o <output> -t <hg38.sdf/hg19.sdf>
   10. SVs are called with Sniffles2:
       sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa/hg19.fa> --vcf <output_vcf> --snf <output_snf>
