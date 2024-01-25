@@ -10,10 +10,10 @@ https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/
 
 The HG002 data obtained from Oxford Nanopore Technologies. The analysis pipeline can be summarized as follows:  
   1. The data was obtained in .fastq format, aligned to GRCh38/Hg38 and GRCh37/Hg19 using minimap2 and subsequently converted to binary, sorted and indexed with samtools:
-     minimap2 -ax map-ont ../hg38.fa -t 24 <reads.fastq> > <sample.sam>
-     samtools view -bS <sample.sam> > <sample.bam>
-     samtools sort -@ 24 <sample.bam> > <sample.sorted.bam>
-     samtools index -@ 24 <sample.sorted.bam>
+     minimap2 -ax map-ont ../hg38.fa -t 24 <reads.fastq> > <sample.sam>  
+     samtools view -bS <sample.sam> > <sample.bam>  
+     samtools sort -@ 24 <sample.bam> > <sample.sorted.bam>  
+     samtools index -@ 24 <sample.sorted.bam>  
   2. The HG002 samples are analysed with mosdepth to determine regions of >=5 coverage:  
      mosdepth --quantize 0:4:5:  <sample.bam>.quantized5.bed <sample.bam>    
   3. SNVs are called using Clair3 (clair3-run.sh).  
