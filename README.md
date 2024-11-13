@@ -16,28 +16,30 @@ The HG002 data obtained from Oxford Nanopore Technologies. The analysis pipeline
      samtools index -@ 24 <sample.sorted.bam>
   2. The aligned reads were filtered to remove chimeric reads:
      samtools view -h <sample.sorted.bam> -@4 | python MD_1SA5pp.py 1 5| samtools view -bS -@ 5 -) > <sample.chmera.filtered.bam>
-     
-  4. The HG002 samples are analysed with mosdepth to determine regions of >=5 coverage:  
-     mosdepth --quantize 0:4:5:  <sample.bam>.quantized5.bed <sample.bam>    
-  5. SNVs are called using Clair3 (clair3-run.sh).  
-  6. SNV calls are split into substitutions and small IN/DELs (filterIndelSub.py).  
-  7. Calls are filtered for those located in regions covered by 5 or more reads:  
-     bedtools intersect -a <SNVcalls.vcf.gz> -b <sample.bam>.quantized5.bed  
-  8. Calls supported by at least 3 reads are selected (SNVsup.py).   
-  9. Filtering from points 3-5 was applied to GIAB HG002 benchmark .vcf files, using  
-     <sample.bam>.quantized5.bed regions corresponding to each specific test  
+  3. Resulting filtered .bam was sorted and indexed.
+     samtools sort -@ 24 <sample.chmera.filtered.bam> > <sample.chmera.filtered.sorted.bam>
+     samtools index -@ 24 <sample.chmera.filtered.sorted.bam> 
+  5. The HG002 samples are analysed with mosdepth to determine regions of >=5 coverage:  
+     mosdepth --quantize 0:4:5:  <sample.chmera.filtered.sorted.bam>.quantized5.bed <sample.chmera.filtered.sorted.bam>  
+  6. SNVs are called using Clair3 (clair3-run.sh).  
+  7. SNV calls are split into substitutions and small IN/DELs (filterIndelSub.py).  
+  8. Calls are filtered for those located in regions covered by 5 or more reads:  
+     bedtools intersect -a <SNVcalls.vcf.gz> -b <sample.chmera.filtered.sorted.bam>.quantized5.bed  
+  9. Calls supported by at least 3 reads are selected (SNVsup.py).   
+  10. Filtering from points 3-5 was applied to GIAB HG002 benchmark .vcf files, using  
+     <sample.chmera.filtered.sorted.bam>.quantized5.bed regions corresponding to each specific test  
      so that the regions within the tested sample and baseline were the same.  
-  10. Filtered .vcf files were tabix indexed with bcftools:  
+  11. Filtered .vcf files were tabix indexed with bcftools:  
      bcftools index -t <SNVcalls.filtered.vcf.gz>
-  11. Calls are compared using RTGtools:  
+  12. Calls are compared using RTGtools:  
       rtg vcfeval --baseline  <Baseline.SNVcalls.filtered.vcf.gz> --bed-regions <Baseline.SNVcalls.bed> -c <Sample.SNVcalls.filtered.vcf.gz> -o <output> -t <hg38.sdf/hg19.sdf>
-  12. SVs are called with Sniffles2:  
+  13. SVs are called with Sniffles2:  
       sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa/hg19.fa> --vcf <output_vcf> --snf <output_snf>
-  13. SV calls are filtered for those located in regions covered by 5 or more reads:  
+  14. SV calls are filtered for those located in regions covered by 5 or more reads:  
       bedtools intersect -a <SVcalls.vcf.gz> -b <sample.bam>.quantized5.bed
-  14. SV calls are filtered for those supported by at least 3 reads and containing insertions or deletions (filterIndelSV.py), additionally split between insertions or deletions by using:  
+  15. SV calls are filtered for those supported by at least 3 reads and containing insertions or deletions (filterIndelSV.py), additionally split between insertions or deletions by using:  
       grep SVTYPE=<INS/DEL> <SVcalls.vcf.gz>
-  15. SV calls within the tested samples are benchmarked against the Giab truthset using Truvari:  
+  16. SV calls within the tested samples are benchmarked against the Giab truthset using Truvari:  
       truvari bench --passonly -b <baseline.vcf> --includebed <baseline.bed>  --pick multi -c <sample.vcf> -o	<output>
 
 Single-cell and corresponding bulk data pipeline:
