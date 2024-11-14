@@ -71,20 +71,18 @@ Single-cell and corresponding bulk data pipeline:
      bedtools intersect -a <SNVcalls.vcf.gz> -b <sample.bam>.quantized5.5.bed
   13. Calls are intersected with exons:  
      bedtools intersect -a <SNVcalls.5.vcf.gz> -b exons.bed.gz -u
-  14. Calls supported by at least 3 reads are selected and a summary of Bulk only (TN)), Single-cell only (FP) and shared calls is generated (TP) (filterSNV.py).
+  14. Calls supported by at least 3 reads are selected and a summary of Bulk only (TN)), Single-cell only (FP) and shared calls is generated (TP) (filterSNV.py). Further, input in lines (91-101) in the script was changed for calls intersected with exons and analysed accordingly.
       Resulting summary used to calculate F1 scores, fractions and absolute variant counts.
-  15. Similiarly to point 14, calls intersecting exons supported by at least 3 reads are selected and a summary of Bulk only (TN)), Single-cell only (FP) and shared calls is generated (TP) (filterSNVgene.py).
+  15. Similiarly to point 14, calls intersecting exons associated with MSA (gene list compiled from literature) supported by at least 3 reads are selected and a summary of Bulk only (TN)), Single-cell only (FP) and shared calls is generated (TP) (filterSNVgeneMSA.py).
       Resulting summary used to calculate F1 scores, fractions and absolute variant counts.
-  16. Similiarly to point 14, calls intersecting exons associated with MSA (gene list compiled from literature) supported by at least 3 reads are selected and a summary of Bulk only (TN)), Single-cell only (FP) and shared calls is generated (TP) (filterSNVgeneMSA.py).
-      Resulting summary used to calculate F1 scores, fractions and absolute variant counts.
-  17. SNV types (substitutions) were determined using snvtype.py script:
+  16. SNV types (substitutions) were determined using snvtype.py script:
       snvtype.py <REF_allele> <ALT_allele> input.vcf.gz
-  18. SNV locations were extracted from .VCF and converted into .bed format using snv2bed.py script.
-  19. SNVs locations were extracted into bed format and shuffled 10,000 times for each experiment; the results were summarized and used in Z-test to determine results of permutation test (hg38-N.bed - list of unmapped regions represented as N in GRCh38, hg38len.bed - lengths of GRCh38 chromosomes):
+  17. SNV locations were extracted from .VCF and converted into .bed format using snv2bed.py script.
+  18. SNVs locations were extracted into bed format and shuffled 10,000 times for each experiment; the results were summarized and used in Z-test to determine results of permutation test (hg38-N.bed - list of unmapped regions represented as N in GRCh38, hg38len.bed - lengths of GRCh38 chromosomes):
       for j in {1..10000}; do for i in <input.SNV.bed>; do bedtools shuffle -i $i -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz; done ; done
-  20. SVs are called with Sniffles2:  
+  19. SVs are called with Sniffles2:  
       sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa> --vcf <output_vcf> --snf <output_snf>
-  21. SV calls are filtered for those located in regions covered by 5 or more reads:  
+  20. SV calls are filtered for those located in regions covered by 5 or more reads:  
       bedtools intersect -a <SVcalls.vcf.gz> -b <sample.bam>.quantized5.5.bed
-  22. SV calls are filtered for those with PASS filter, supported by at least 3 reads in any of the merged single cells and containing insertions or deletions (filterSVmerge.py).
-  23. Filtered SV insertions are converted to .fasta, while deletions are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). 
+  21. SV calls are filtered for those with PASS filter, supported by at least 3 reads in any of the merged single cells and containing insertions or deletions (filterSVmerge.py).
+  22. Filtered SV insertions are converted to .fasta, while deletions are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). 
