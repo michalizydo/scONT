@@ -1,3 +1,4 @@
+# Filter for SNVs/small InDels - minimum support of 2 - HG002 benchmark
 import sys
 for i in sys.stdin:
 	if i.startswith("#"):
