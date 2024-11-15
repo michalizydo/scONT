@@ -54,13 +54,15 @@ Single-cell and corresponding bulk data pipeline:
      samtools view -bS <sample.sam> > <sample.bam>
      samtools sort -@ 24 <sample.bam> > <sample.sorted.bam>
      samtools index -@ 24 <sample.sorted.bam>
-  2. Single-cell samples were grouped by library preparation technique and tissue type. Groups of cell data were merged using Samtools:
-     samtools merge -r -o <merge_out.bam> <cell_data1.bam> <cell_data2.bam>...
-  3. The aligned reads were filtered to remove chimeric reads:
+  2. Alignments from individual signle-cells were merged within each ONT sequencing experiment:
+     /hgsc_software/samtools/samtools-1.15.1/bin/samtools merge -r -o <sample.merged.bam> <SC_1.sorted.bam> <SC_2.sorted.bam>...
+  3. Single-cell samples were grouped by library preparation technique and tissue type. Groups of cell data were merged using Samtools:
+     samtools merge -r -o <merge_out.bam> <SC_1.sorted.bam> <SC_2.sorted.bam>...
+  4. The aligned reads were filtered to remove chimeric reads:
      samtools view -h <merge_out.bam> -@4 | python MD_1SA5pp.py 1 5| samtools view -bS -@ 5 -) > <merge.chmera.filtered.bam>
-  4. The single cell assemblies and merges were analysed with mosdepth to determine regions of >=5 coverage:  
+  5. The single cell assemblies and merges were analysed with mosdepth to determine regions of >=5 coverage:  
      mosdepth --quantize 0:4:5:  <sample.bam>.quantized5.bed <sample.bam>
-  5. Resulting bed files were filtered for regions of >=5x coverage
+  6. Resulting bed files were filtered for regions of >=5x coverage
      grep "5:" <sample.bam>.quantized5.bed > <sample.bam>.quantized5.5.bed
   7. SNVs are called using Clair3 (clair3-run.sh).
   8. Resulting vcf were corrected to use uppercase letters in sequence and report correct sample names (fixglnexus.py).
@@ -82,13 +84,14 @@ Single-cell and corresponding bulk data pipeline:
 
        for j in {1..10000}; do bedtools shuffle -i <input.SNV.bed> -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz ; done
      
-  19. SVs are called with Sniffles2:  
+  19. SVs were called with Sniffles2:  
       sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa> --vcf <output_vcf> --output-rnames --snf <output_snf>
-  20. SV calls are merged with Sniffles2:
-      
-  21. SV calls are filtered for those located in regions covered by 5 or more reads:  
+      sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa> --vcf <output_vcf> --output-rnames --noqc --mosaic
+  20. SV calls were merged with Sniffles2:
+      sniffles2 --threads 24 --input <SC+bulk.snf.list.tsv> --reference <hg38.fa> --vcf <output_vcf>
+  21. SV calls from merges are filtered for those located in regions covered by 5 or more reads:  
       bedtools intersect -a <SVcalls.vcf.gz> -b <sample.bam>.quantized5.5.bed
   22. SV calls are filtered for those with PASS filter, supported by at least 3 reads in any of the merged single cells and containing insertions or deletions (filterSVmerge.py).
   23. Basic statistics of SVs were calculated using stats_SV.py script.
-  24. Reads that contain SVs are selected, traced back to their source SC .bam files and statistics on how many variants are present in how many single cells are produced (getReadname.py).
+  25. Reads that contain SVs are selected, traced back to their source SC .bam files and statistics on how many variants are present in how many single cells are produced (getReadname.py).
   26. Filtered SV insertions are converted to .fasta, while deletions are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). 
