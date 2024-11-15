@@ -79,7 +79,9 @@ Single-cell and corresponding bulk data pipeline:
       snvtype.py <REF_allele> <ALT_allele> input.vcf.gz
   17. SNV locations were extracted from .VCF and converted into .bed format using snv2bed.py script.
   18. SNVs locations were extracted into bed format and shuffled 10,000 times for each experiment; the results were summarized and used in Z-test to determine results of permutation test (hg38-N.bed - list of unmapped regions represented as N in GRCh38, hg38len.bed - lengths of GRCh38 chromosomes):
-      for j in {1..10000}; do for i in <input.SNV.bed>; do bedtools shuffle -i $i -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz; done ; done
+
+       for j in {1..10000}; do bedtools shuffle -i <input.SNV.bed> -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz ; done
+     
   19. SVs are called with Sniffles2:  
       sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa> --vcf <output_vcf> --snf <output_snf>
   20. SV calls are filtered for those located in regions covered by 5 or more reads:  
