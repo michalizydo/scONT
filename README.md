@@ -83,9 +83,12 @@ Single-cell and corresponding bulk data pipeline:
        for j in {1..10000}; do bedtools shuffle -i <input.SNV.bed> -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz ; done
      
   19. SVs are called with Sniffles2:  
-      sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa> --vcf <output_vcf> --snf <output_snf>
-  20. SV calls are filtered for those located in regions covered by 5 or more reads:  
+      sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa> --vcf <output_vcf> --output-rnames --snf <output_snf>
+  20. SV calls are merged with Sniffles2:
+      
+  21. SV calls are filtered for those located in regions covered by 5 or more reads:  
       bedtools intersect -a <SVcalls.vcf.gz> -b <sample.bam>.quantized5.5.bed
-  21. SV calls are filtered for those with PASS filter, supported by at least 3 reads in any of the merged single cells and containing insertions or deletions (filterSVmerge.py).
-  22. Basic statistics of SVs were calculated using stats_SV.py script. 
-  23. Filtered SV insertions are converted to .fasta, while deletions are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). 
+  22. SV calls are filtered for those with PASS filter, supported by at least 3 reads in any of the merged single cells and containing insertions or deletions (filterSVmerge.py).
+  23. Basic statistics of SVs were calculated using stats_SV.py script.
+  24. Reads that contain SVs are selected, traced back to their source SC .bam files and statistics on how many variants are present in how many single cells are produced (getReadname.py).
+  26. Filtered SV insertions are converted to .fasta, while deletions are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). 
