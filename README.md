@@ -103,3 +103,4 @@ Single-cell and corresponding bulk data pipeline:
   28. Statistics about Alu/Line insertions are calculated (alulineins.py)
   29. Numbers of INS into TE loci are calculated (insTE.py)
   30. Types of recombinational deletions are calculated (deletionsTE.py)
+  31. Summary of TEs within deletions was calculated (checkAluLine.py)
