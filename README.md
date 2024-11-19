@@ -102,3 +102,4 @@ Single-cell and corresponding bulk data pipeline:
       RepeatMasker -dir $(basename -s .fasta <input_fasta>)_RMout -species human -s -e hmmer -pa 24 <input_fasta> 
   28. Statistics about Alu/Line insertions are calculated (alulineins.py)
   29. Numbers of INS into TE loci are calculated (insTE.py)
+  30. Types of recombinational deletions are calculated (deletionsTE.py)
