@@ -99,4 +99,4 @@ Single-cell and corresponding bulk data pipeline:
   26. Fasta files of insertions and deletions (+flanks), as well as insertion loci extracted from reference are analysed with Repeatmasker: 
       RepeatMasker -dir $(basename -s .fasta <input_fasta>)_RMout -species human -s -e hmmer -pa 24 <input_fasta> 
   27. Statistics about Alu/Line insertions are calculated (alulineins.py)
-  28. Numbers of INS into TE loci are calculated (TEloci.py)
+  28. Numbers of INS into TE loci are calculated (insTE.py)
