@@ -95,7 +95,8 @@ Single-cell and corresponding bulk data pipeline:
       grep -v "#" <SC_bulk.vcf/Bulk_only.vcf>  | grep <INS/DEL> | awk '$<bulk_location> /0\/1/ {print $0}' | wc -l 
   23. Basic statistics of SVs were calculated using stats_SV.py script.  
   24. Reads that contain SVs are selected, traced back to their source SC .bam files and statistics on how many variants are present in how many single cells are produced (getReadname.py). 
-  25. Filtered SV insertions are converted to .fasta, while deletions are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). 
-  26. Fasta files of insertions and deletions are analysed with Repeatmasker: 
+  25. Filtered SV insertions are converted to .fasta, while deletions (+flanks) are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). Insertion loci are also extracted from reference (extractfromref.py). 
+  26. Fasta files of insertions and deletions (+flanks), as well as insertion loci extracted from reference are analysed with Repeatmasker: 
       RepeatMasker -dir $(basename -s .fasta <input_fasta>)_RMout -species human -s -e hmmer -pa 24 <input_fasta> 
-  27. Statistics about Alu/Line insertions are calculated (alulineins.py) 
+  27. Statistics about Alu/Line insertions are calculated (alulineins.py)
+  28. Numbers of INS into TE loci are calculated (TEloci.py)
