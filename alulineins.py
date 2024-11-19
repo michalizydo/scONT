@@ -1,3 +1,8 @@
+# Script to summarize statistics on SINE/Alu and LINE/L1 elements
+# Indexes start at 0 for the first sample in vcf.
+# 
+# Usage python alulineins.py <bulk_vcf_index> <sc_vcf_index> <vcf_calls.vcf>
+
 def countSCb(vcffile):
     # Initialize lists to hold different categories of names and a total counter.
     bulkOnly = []
