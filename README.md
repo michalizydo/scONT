@@ -129,7 +129,11 @@ Single-cell and corresponding bulk data pipeline:
 44. Mosdepth coverage files, after filtering for +5x regions, were compared using bedtools intersect for MSA2 and control brains for PromethION and MiniON coverage in overlapping regions. Output was summarized using countcoveragebreadth.py and summary used to draw charts of coverage in MS Excel.
     bedtools intersect -a <MSA2_promethion.5.bed> -b ../<MSA2_minion.5.bed>  -wa -u > <MSA2.promethion.minion.intersect.regions.bed>
     cat <MSA2.promethion.minion.intersect.regions.bed> | python countcoveragebreadth.py
-45. Plot_scatteralu.py was used to generate main plot for Alu family distributions.    
+45. Plot_scatteralu.py was used to generate main plot for Alu family distributions.
 46. Bar_coverage.py was used to generate main plot for coverage distributions.
 47. Scatter_variants.py was used to generate main plot for variant counts in different samples.
 48. Plot_scatter_recom.py was used to generate main plot for TE recombination events.
+49. Scatterdata.py was used to extract allele frequency information from bulk and SC samples.
+50. Sumscatter.py was used to summarize the VAF data.
+51. Resulting VAF data was loaded into excel, variants were selected for those by at least 2 cells. For MSA2 and control brain experiments, only Promethion results were used. Single cell frequency was calculated as number_of_cells_containing_var / number_of_cells_covering_locus.
+52. For selected variants, STIX (https://www.biorxiv.org/content/10.1101/2024.09.30.615931v1) was used to determine population-wide frequency and rare variants (under 1% of frequency in population) were retained (filterStix.py)
