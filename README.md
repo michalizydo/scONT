@@ -139,3 +139,4 @@ Single-cell and corresponding bulk data pipeline:
 52. For selected variants, STIX (https://www.biorxiv.org/content/10.1101/2024.09.30.615931v1) was used to determine population-wide frequency and rare variants (under 1% of frequency in population) were retained (filterStix.py)
 53. For remaining SVs, Bulk VAF and SC frequency was used as data for generation of main figure 1 AF density map. Data was inserted into lines 9-16 of density_scatter_grey.py script and used:
     python density_scatter_grey.py
+54. Comparison with blood cell LR-WGS data (10.1038/s41467-023-40898-3) was performed using filtersupcov_blood.py (simple coverage and support filtering) and summarized with calcstat_blood.py (statistic calculation). The blood cell sequencing samples undergone same chimera filtering as brain ones ()
