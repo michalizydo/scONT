@@ -105,3 +105,8 @@ Single-cell and corresponding bulk data pipeline:
   30. Numbers of INS into TE loci are calculated (insTE.py)
   31. Types of recombinational deletions are calculated (deletionsTE.py)
   32. Summary of TEs within deletions was calculated (checkAluLine.py)
+  33. Illumina PicoPLEX bam files were tagged (RG) and CIPOS/CIEND tag was added to long-read deletions:
+      samtools addreplacerg -r ID:<IO> -r SM:<ID> <INPUT.picoplex.merge.bam> -o <OUTPUT.picoplex.merge.rgtag.bam> -@ 7
+      cat <long_read_del.vcf> | python fixcip[os.py > <long_read_del_cipos.vcf>
+  34. 
+      
