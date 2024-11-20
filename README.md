@@ -108,5 +108,6 @@ Single-cell and corresponding bulk data pipeline:
   33. Illumina PicoPLEX bam files were tagged (RG) and CIPOS/CIEND tag was added to long-read deletions:
       samtools addreplacerg -r ID:<IO> -r SM:<ID> <INPUT.picoplex.merge.bam> -o <OUTPUT.picoplex.merge.rgtag.bam> -@ 7
       cat <long_read_del.vcf> | python fixcip[os.py > <long_read_del_cipos.vcf>
-  34. 
+  34. SVtyper was used to genotype long-read deletions in PicoPLEX samples:
+      svtyper -i <long_read_del_cipos.vcf> -B <picoplex.merge.rgtag.bam> -l <picoplex.merge.rgtag.bam>>.json > picoplex.merge.rgtag.GT.vcf> 
       
