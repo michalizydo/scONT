@@ -79,28 +79,29 @@ Single-cell and corresponding bulk data pipeline:
       Resulting summary used to calculate F1 scores, fractions and absolute variant counts. 
   15. SNV types (substitutions) were determined using snvtype.py script: 
       snvtype.py <REF_allele> <ALT_allele> input.vcf.gz 
-  16. SNV locations were extracted from .VCF and converted into .bed format using snv2bed.py script. 
-  17. SNVs locations were extracted into bed format and shuffled 10,000 times for each experiment; the results were summarized and used in Z-test to determine results of permutation test (hg38-N.bed - list of unmapped regions represented as N in GRCh38, hg38len.bed - lengths of GRCh38 chromosomes): 
+  16. SNV locations were extracted from .VCF and converted into .bed format using snv2bed.py script.
+  17. SNV In/Del ratio was determined using compareindels.py script.
+  18. SNVs locations were extracted into bed format and shuffled 10,000 times for each experiment; the results were summarized and used in Z-test to determine results of permutation test (hg38-N.bed - list of unmapped regions represented as N in GRCh38, hg38len.bed - lengths of GRCh38 chromosomes): 
 
        for j in {1..10000}; do bedtools shuffle -i <input.SNV.bed> -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz ; done 
      
-  18. SVs were called with Sniffles2:   
+  19. SVs were called with Sniffles2:   
       sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa> --vcf <output_vcf> --output-rnames --snf <output_snf> 
       sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa> --vcf <output_vcf> --output-rnames --noqc --mosaic 
-  19. SV calls were merged with Sniffles2: 
+  20. SV calls were merged with Sniffles2: 
       sniffles2 --threads 24 --input <SC+bulk.snf.list.tsv> --reference <hg38.fa> --vcf <output_vcf> 
-  20. SV calls from merges are filtered for those located in regions covered by 5 or more reads:   
+  21. SV calls from merges are filtered for those located in regions covered by 5 or more reads:   
       bedtools intersect -a <SVcalls.vcf.gz> -b <sample.bam>.quantized5.5.bed 
-  21. SV calls are filtered for those with PASS filter, supported by at least 3 reads in any of the merged single cells and containing insertions or deletions (filterSVmerge.py). 
-  22. SV calls were split into SC-only,  bulk-only and SC+bulk (getFP.py). 
-  23. SC+bulk and bulk-only 0/1 bulk genotypes were counted using awk and shell commands: 
+  22. SV calls are filtered for those with PASS filter, supported by at least 3 reads in any of the merged single cells and containing insertions or deletions (filterSVmerge.py). 
+  23. SV calls were split into SC-only,  bulk-only and SC+bulk (getFP.py). 
+  24. SC+bulk and bulk-only 0/1 bulk genotypes were counted using awk and shell commands: 
       grep -v "#" <SC_bulk.vcf/Bulk_only.vcf>  | grep <INS/DEL> | awk '$<bulk_location> /0\/1/ {print $0}' | wc -l 
-  24. Basic statistics of SVs were calculated using stats_SV.py script.  
-  25. Reads that contain SVs are selected, traced back to their source SC .bam files and statistics on how many variants are present in how many single cells are produced (getReadname.py). 
-  26. Filtered SV insertions are converted to .fasta, while deletions (+flanks) are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). Insertion loci are also extracted from reference (extractfromref.py). 
-  27. Fasta files of insertions and deletions (+flanks), as well as insertion loci extracted from reference are analysed with Repeatmasker: 
+  25. Basic statistics of SVs were calculated using stats_SV.py script.  
+  26. Reads that contain SVs are selected, traced back to their source SC .bam files and statistics on how many variants are present in how many single cells are produced (getReadname.py). 
+  27. Filtered SV insertions are converted to .fasta, while deletions (+flanks) are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). Insertion loci are also extracted from reference (extractfromref.py). 
+  28. Fasta files of insertions and deletions (+flanks), as well as insertion loci extracted from reference are analysed with Repeatmasker: 
       RepeatMasker -dir $(basename -s .fasta <input_fasta>)_RMout -species human -s -e hmmer -pa 24 <input_fasta> 
-  28. Statistics about Alu/Line insertions are calculated (alulineins.py)
-  29. Numbers of INS into TE loci are calculated (insTE.py)
-  30. Types of recombinational deletions are calculated (deletionsTE.py)
-  31. Summary of TEs within deletions was calculated (checkAluLine.py)
+  29. Statistics about Alu/Line insertions are calculated (alulineins.py)
+  30. Numbers of INS into TE loci are calculated (insTE.py)
+  31. Types of recombinational deletions are calculated (deletionsTE.py)
+  32. Summary of TEs within deletions was calculated (checkAluLine.py)
