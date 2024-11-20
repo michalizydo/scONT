@@ -1,6 +1,8 @@
 # scONT
 Single-cell Oxford Nanopore pipeline, supplement of Single cell long read whole genome sequencing to detect somatic mutations in human brain.
 
+Also available via Zenodo DOI: https://doi.org/10.5281/zenodo.14194549
+
 GIAB HG002 benchmark data links:
 
 https://www.nist.gov/programs-projects/genome-bottle  
