@@ -118,6 +118,6 @@ Single-cell and corresponding bulk data pipeline:
   38. SV vcf files were uploaded to online AnnotSV service (https://www.lbgi.fr/AnnotSV/), ran with default settings and resulting XML files were searched for genes related with MSA/neurodegeneration.
   39. Repeatmasker .out files for insertions were used to determine sizes of detected TEs using Onecodetofindthemall as per provided instructions (https://doua.prabi.fr/software/one-code-to-find-them-all). A filter80.py python script was used to filter output, getting counts of elements that spanned preset % TE reference:
       cat <Onecodetofindthemall_output_elem_sorted.csv> | python filter80.py <fraction_of_target_TE_ref> | grep <SINE/Alu or LINE/L1> | wc -l
-  40. Locations of deletions  were shuffled 10000 times and intersected with reference SINE/Alu and LINE/L1 locations (extracted from https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz and selected with grep <SINE/Alu\|LINE/L1>) for each of the shuffles, for DEL.
+  40. Locations of deletions  were shuffled 10000 times and intersected with reference SINE/Alu and LINE/L1 locations (extracted from https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz and selected with grep <SINE/Alu\|LINE/L1>, converted to bed with rmtobed.py script) for each of the shuffles, for DEL. Summarized with countTEs.py script.
       for j in {1..10000}; do bedtools shuffle -i <input.SV.bed> -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz ; done
-      bedtools intersect -a <SVcalls.X.vcf.gz> -b exons.bed.gz -u -wa -wb
+      bedtools intersect -a <SVcalls.X.vcf.gz> -b repeatmasker_hg38_out.bed.gz -u -wa -wb
