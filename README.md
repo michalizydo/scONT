@@ -137,3 +137,4 @@ Single-cell and corresponding bulk data pipeline:
 50. Sumscatter.py was used to summarize the VAF data.
 51. Resulting VAF data was loaded into excel, variants were selected for those by at least 2 cells. For MSA2 and control brain experiments, only Promethion results were used. Single cell frequency was calculated as number_of_cells_containing_var / number_of_cells_covering_locus.
 52. For selected variants, STIX (https://www.biorxiv.org/content/10.1101/2024.09.30.615931v1) was used to determine population-wide frequency and rare variants (under 1% of frequency in population) were retained (filterStix.py)
+53. For remaining SVs, Bulk VAF and SC frequency was used as data for generation of main figure 1 AF density map. Data was inserted into lines 9-16
