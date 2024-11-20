@@ -110,4 +110,4 @@ Single-cell and corresponding bulk data pipeline:
       cat <long_read_del.vcf> | python fixcip[os.py > <long_read_del_cipos.vcf>
   34. SVtyper was used to genotype long-read deletions in PicoPLEX samples:
       svtyper -i <long_read_del_cipos.vcf> -B <picoplex.merge.rgtag.bam> -l <picoplex.merge.rgtag.bam>>.json > picoplex.merge.rgtag.GT.vcf> 
-      
+  35. Script filterill.py was used to get all genotyped deletions in each category, output was counted using wc -l.
