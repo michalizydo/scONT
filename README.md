@@ -130,3 +130,4 @@ Single-cell and corresponding bulk data pipeline:
     bedtools intersect -a <MSA2_promethion.5.bed> -b ../<MSA2_minion.5.bed>  -wa -u > <MSA2.promethion.minion.intersect.regions.bed>
     cat <MSA2.promethion.minion.intersect.regions.bed> | python countcoveragebreadth.py
 45. Plot_scatteralu.py was used to generate main plot for Alu family distributions.    
+46. Bar_coverage.py was used to generate main plot for coverage distributions.
