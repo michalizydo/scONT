@@ -123,3 +123,6 @@ Single-cell and corresponding bulk data pipeline:
   41. Locations of deletions  were shuffled 10000 times and intersected with reference SINE/Alu and LINE/L1 locations (extracted from https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz and selected with grep <SINE/Alu\|LINE/L1>, converted to bed with rmtobed.py script) for each of the shuffles, for DEL. Summarized with countTEs.py script.
       for j in {1..10000}; do bedtools shuffle -i <input.SV.bed> -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz ; done
       bedtools intersect -a <SVcalls.X.vcf.gz> -b repeatmasker_hg38_out.bed.gz -u -wa -wb
+42. Plots for sizes of INS and DEL were generated using sizeplotvcf.py:
+    cat <source.vcf> | grep <INS/DEL> | python sizeplotvcf.py <Title_text> <output_file_name>
+    
