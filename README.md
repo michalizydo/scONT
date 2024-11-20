@@ -111,3 +111,7 @@ Single-cell and corresponding bulk data pipeline:
   34. SVtyper was used to genotype long-read deletions in PicoPLEX samples:
       svtyper -i <long_read_del_cipos.vcf> -B <picoplex.merge.rgtag.bam> -l <picoplex.merge.rgtag.bam>>.json > picoplex.merge.rgtag.GT.vcf> 
   35. Script filterill.py was used to get all genotyped deletions in each category, output was counted using wc -l.
+  36. Locations of SVs  were shuffled 10000 times and intersected with exons for each of the shuffles, separately for INS and DEL.
+      for j in {1..10000}; do bedtools shuffle -i <input.SV.bed> -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz ; done
+      bedtools intersect -a <SVcalls.X.vcf.gz> -b exons.bed.gz -u
+  37. To summarize, countV.py script was used. Averages and standard deviations were calculated in MS Excel for each experiment and used to calculate z-score: (real_observed_value - mean_randomized) / stdev_randomized.
