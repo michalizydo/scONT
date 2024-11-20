@@ -115,3 +115,6 @@ Single-cell and corresponding bulk data pipeline:
       for j in {1..10000}; do bedtools shuffle -i <input.SV.bed> -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz ; done
       bedtools intersect -a <SVcalls.X.vcf.gz> -b exons.bed.gz -u
   37. To summarize, countV.py script was used. Averages and standard deviations were calculated in MS Excel for each experiment and used to calculate z-score: (real_observed_value - mean_randomized) / stdev_randomized.
+  38. SV vcf files were uploaded to online AnnotSV service (https://www.lbgi.fr/AnnotSV/), ran with default settings and resulting XML files were searched for genes related with MSA/neurodegeneration.
+  39. Repeatmasker .out files for insertions were used to determine sizes of detected TEs using Onecodetofindthemall as per provided instructions (https://doua.prabi.fr/software/one-code-to-find-them-all). A filter80.py python script was used to filter output, getting counts of elements that spanned preset % TE reference:
+      cat <Onecodetofindthemall_output_elem_sorted.csv> | python filter80.py <fraction_of_target_TE_ref> | grep <SINE/Alu or LINE/L1> | wc -l
