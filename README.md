@@ -132,3 +132,4 @@ Single-cell and corresponding bulk data pipeline:
 45. Plot_scatteralu.py was used to generate main plot for Alu family distributions.    
 46. Bar_coverage.py was used to generate main plot for coverage distributions.
 47. Scatter_variants.py was used to generate main plot for variant counts in different samples.
+48. Plot_scatter_recom.py was used to generate main plot for TE recombination events.
