@@ -131,3 +131,4 @@ Single-cell and corresponding bulk data pipeline:
     cat <MSA2.promethion.minion.intersect.regions.bed> | python countcoveragebreadth.py
 45. Plot_scatteralu.py was used to generate main plot for Alu family distributions.    
 46. Bar_coverage.py was used to generate main plot for coverage distributions.
+47. Scatter_variants.py was used to generate main plot for variant counts in different samples.
