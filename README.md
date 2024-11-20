@@ -129,4 +129,4 @@ Single-cell and corresponding bulk data pipeline:
 44. Mosdepth coverage files, after filtering for +5x regions, were compared using bedtools intersect for MSA2 and control brains for PromethION and MiniON coverage in overlapping regions. Output was summarized using countcoveragebreadth.py and summary used to draw charts of coverage in MS Excel.
     bedtools intersect -a <MSA2_promethion.5.bed> -b ../<MSA2_minion.5.bed>  -wa -u > <MSA2.promethion.minion.intersect.regions.bed>
     cat <MSA2.promethion.minion.intersect.regions.bed> | python countcoveragebreadth.py
-    
+45. Plot_scatteralu.py was used to generate main plot for Alu family distributions.    
