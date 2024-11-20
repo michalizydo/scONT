@@ -89,35 +89,37 @@ Single-cell and corresponding bulk data pipeline:
       sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa> --vcf <output_vcf> --output-rnames --snf <output_snf> 
       sniffles2 --threads 24 --input <input_bam> --reference <hg38.fa> --vcf <output_vcf> --output-rnames --noqc --mosaic 
   20. SV calls were merged with Sniffles2: 
-      sniffles2 --threads 24 --input <SC+bulk.snf.list.tsv> --reference <hg38.fa> --vcf <output_vcf> 
-  21. SV calls from merges are filtered for those located in regions covered by 5 or more reads:   
+      sniffles2 --threads 24 --input <SC+bulk.snf.list.tsv> --reference <hg38.fa> --vcf <output_vcf>
+  21. Initial, unfiltered SV calls were split into duplications (cat svcalls.vcf | grep DUP) and inversions (cat svcalls.vcf | grep INV). Each of the files were split into SC+bulk, SC only and bulk only datasets using nulltest.py. Resulting files were used as input for sizeplotvcf.py to plot INV and DUP sizes and as
+      input to medmax.sh script to get median and maximum sizes of these SVs.
+  22. SV calls from merges are filtered for those located in regions covered by 5 or more reads:   
       bedtools intersect -a <SVcalls.vcf.gz> -b <sample.bam>.quantized5.5.bed 
-  22. SV calls are filtered for those with PASS filter, supported by at least 3 reads in any of the merged single cells and containing insertions or deletions (filterSVmerge.py). 
-  23. SV calls were split into SC-only,  bulk-only and SC+bulk (getFP.py). 
-  24. SC+bulk and bulk-only 0/1 bulk genotypes were counted using awk and shell commands: 
+  23. SV calls are filtered for those with PASS filter, supported by at least 3 reads in any of the merged single cells and containing insertions or deletions (filterSVmerge.py). 
+  24. SV calls were split into SC-only,  bulk-only and SC+bulk (getFP.py). 
+  25. SC+bulk and bulk-only 0/1 bulk genotypes were counted using awk and shell commands: 
       grep -v "#" <SC_bulk.vcf/Bulk_only.vcf>  | grep <INS/DEL> | awk '$<bulk_location> /0\/1/ {print $0}' | wc -l 
-  25. Basic statistics of SVs were calculated using stats_SV.py script.  
-  26. Reads that contain SVs are selected, traced back to their source SC .bam files and statistics on how many variants are present in how many single cells are produced (getReadname.py). 
-  27. Filtered SV insertions are converted to .fasta, while deletions (+flanks) are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). Insertion loci are also extracted from reference (extractfromref.py). 
-  28. Fasta files of insertions and deletions (+flanks), as well as insertion loci extracted from reference are analysed with Repeatmasker: 
+  26. Basic statistics of SVs were calculated using stats_SV.py script.  
+  27. Reads that contain SVs are selected, traced back to their source SC .bam files and statistics on how many variants are present in how many single cells are produced (getReadname.py). 
+  28. Filtered SV insertions are converted to .fasta, while deletions (+flanks) are converted to .bed (vcf2fasta.py) and subsequently extracted from reference genome (extractfromref.py). Insertion loci are also extracted from reference (extractfromref.py). 
+  29. Fasta files of insertions and deletions (+flanks), as well as insertion loci extracted from reference are analysed with Repeatmasker: 
       RepeatMasker -dir $(basename -s .fasta <input_fasta>)_RMout -species human -s -e hmmer -pa 24 <input_fasta> 
-  29. Statistics about Alu/Line insertions are calculated (alulineins.py)
-  30. Numbers of INS into TE loci are calculated (insTE.py)
-  31. Types of recombinational deletions are calculated (deletionsTE.py)
-  32. Summary of TEs within deletions was calculated (checkAluLine.py)
-  33. Illumina PicoPLEX bam files were tagged (RG) and CIPOS/CIEND tag was added to long-read deletions:
+  30. Statistics about Alu/Line insertions are calculated (alulineins.py)
+  31. Numbers of INS into TE loci are calculated (insTE.py)
+  32. Types of recombinational deletions are calculated (deletionsTE.py)
+  33. Summary of TEs within deletions was calculated (checkAluLine.py)
+  34. Illumina PicoPLEX bam files were tagged (RG) and CIPOS/CIEND tag was added to long-read deletions:
       samtools addreplacerg -r ID:<IO> -r SM:<ID> <INPUT.picoplex.merge.bam> -o <OUTPUT.picoplex.merge.rgtag.bam> -@ 7
       cat <long_read_del.vcf> | python fixcip[os.py > <long_read_del_cipos.vcf>
-  34. SVtyper was used to genotype long-read deletions in PicoPLEX samples:
+  35. SVtyper was used to genotype long-read deletions in PicoPLEX samples:
       svtyper -i <long_read_del_cipos.vcf> -B <picoplex.merge.rgtag.bam> -l <picoplex.merge.rgtag.bam>>.json > picoplex.merge.rgtag.GT.vcf> 
-  35. Script filterill.py was used to get all genotyped deletions in each category, output was counted using wc -l.
-  36. Locations of SVs  were shuffled 10000 times and intersected with exons for each of the shuffles, separately for INS and DEL.
+  36. Script filterill.py was used to get all genotyped deletions in each category, output was counted using wc -l.
+  37. Locations of SVs  were shuffled 10000 times and intersected with exons for each of the shuffles, separately for INS and DEL.
       for j in {1..10000}; do bedtools shuffle -i <input.SV.bed> -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz ; done
       bedtools intersect -a <SVcalls.X.vcf.gz> -b exons.bed.gz -u
-  37. To summarize, countV.py script was used. Averages and standard deviations were calculated in MS Excel for each experiment and used to calculate z-score: (real_observed_value - mean_randomized) / stdev_randomized.
-  38. SV vcf files were uploaded to online AnnotSV service (https://www.lbgi.fr/AnnotSV/), ran with default settings and resulting XML files were searched for genes related with MSA/neurodegeneration.
-  39. Repeatmasker .out files for insertions were used to determine sizes of detected TEs using Onecodetofindthemall as per provided instructions (https://doua.prabi.fr/software/one-code-to-find-them-all). A filter80.py python script was used to filter output, getting counts of elements that spanned preset % TE reference:
+  38. To summarize, countV.py script was used. Averages and standard deviations were calculated in MS Excel for each experiment and used to calculate z-score: (real_observed_value - mean_randomized) / stdev_randomized.
+  39. SV vcf files were uploaded to online AnnotSV service (https://www.lbgi.fr/AnnotSV/), ran with default settings and resulting XML files were searched for genes related with MSA/neurodegeneration.
+  40. Repeatmasker .out files for insertions were used to determine sizes of detected TEs using Onecodetofindthemall as per provided instructions (https://doua.prabi.fr/software/one-code-to-find-them-all). A filter80.py python script was used to filter output, getting counts of elements that spanned preset % TE reference:
       cat <Onecodetofindthemall_output_elem_sorted.csv> | python filter80.py <fraction_of_target_TE_ref> | grep <SINE/Alu or LINE/L1> | wc -l
-  40. Locations of deletions  were shuffled 10000 times and intersected with reference SINE/Alu and LINE/L1 locations (extracted from https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz and selected with grep <SINE/Alu\|LINE/L1>, converted to bed with rmtobed.py script) for each of the shuffles, for DEL. Summarized with countTEs.py script.
+  41. Locations of deletions  were shuffled 10000 times and intersected with reference SINE/Alu and LINE/L1 locations (extracted from https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.out.gz and selected with grep <SINE/Alu\|LINE/L1>, converted to bed with rmtobed.py script) for each of the shuffles, for DEL. Summarized with countTEs.py script.
       for j in {1..10000}; do bedtools shuffle -i <input.SV.bed> -chromFirst -excl hg38-N.bed -noOverlapping -g hg38len.bed | bgzip -c > shuffles/$(basename -s .bed $i).$j.bed.gz ; done
       bedtools intersect -a <SVcalls.X.vcf.gz> -b repeatmasker_hg38_out.bed.gz -u -wa -wb
