@@ -125,4 +125,5 @@ Single-cell and corresponding bulk data pipeline:
       bedtools intersect -a <SVcalls.X.vcf.gz> -b repeatmasker_hg38_out.bed.gz -u -wa -wb
 42. Plots for sizes of INS and DEL were generated using sizeplotvcf.py:
     cat <source.vcf> | grep <INS/DEL> | python sizeplotvcf.py <Title_text> <output_file_name>
+43. Plots for read size distributions were generated using chart_violin.py script.
     
